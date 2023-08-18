@@ -1,0 +1,8 @@
+to change paths in vs studio cd .\pathName
+
+
+BUCKET_NAME='kiran5263'
+IAM_USER_KEY='AKIASMQ5FH3GZB7WVPXJ'
+IAM_USER_SECRET='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'
+
+
