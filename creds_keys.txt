@@ -1,6 +1,0 @@
-to change paths in vs studio cd .\pathName
-
-
-
-
-
