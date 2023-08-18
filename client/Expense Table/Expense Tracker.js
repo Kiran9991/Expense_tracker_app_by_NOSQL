@@ -24,8 +24,12 @@ async function storeExpenses(e) {
 
     // showExpenseOnScreen(expenseDetails);
     const token = localStorage.getItem('token');
-    const response = await axios.post(`${backendApi}/add-expense`, expenseDetails, { headers: {"Authorization": token} })
+    const response = await axios.post(`${backendApi}/add`, expenseDetails, { headers: {"Authorization": token} })
         showExpenseOnScreen(response.data.newExpenseDetail);
+        if(response.status == 200) {
+            document.getElementById('amount').value = ''
+            document.getElementById('description').value = ''
+        }
     } catch(err) {
         console.log(err);
         document.body.innerHTML = document.body.innerHTML+`<h4 style="text-align: center;">Something went Wrong</h4>`;
@@ -60,7 +64,7 @@ async function getAllExpenses(page = 1, limit = 5) {
     if(localStorage.getItem('limit')){
         limit = localStorage.getItem('limit');
     }
-    const res = await axios.get(`${backendApi}/get-expenses?page=${page}&limit=${limit}`, {headers: {'Authorization': token}})
+    const res = await axios.get(`${backendApi}/expenses?page=${page}&limit=${limit}`, {headers: {'Authorization': token}})
         const expenses = res.data.allExpensesDetails;
         expenses.forEach((expense) => {
             showExpenseOnScreen(expense)
@@ -148,7 +152,7 @@ function showExpenseOnScreen(expenseDetails) {
 
     function deleteId(itemId) {
         const token = localStorage.getItem('token');
-        axios.delete(`${backendApi}/delete-expense/${itemId}`, { headers: {"Authorization": token} })
+        axios.delete(`${backendApi}/${itemId}`, { headers: {"Authorization": token} })
         .then((res) => console.log(res))
         .catch(err => console.log(err))
     }
@@ -158,12 +162,12 @@ function showExpenseOnScreen(expenseDetails) {
     deletebtn.innerHTML = 'Delete';
     deletebtn.onclick = () => {
             items.removeChild(tbody)
-            deleteId(expenseDetails.id)
+            deleteId(expenseDetails._id)
     }
 
     function editId(itemId) {
         const token = localStorage.getItem('token');
-        axios.put(`${backendApi}/delete-expense/${itemId}`, { headers: {"Authorization": token} })
+        axios.put(`${backendApi}/${itemId}`, { headers: {"Authorization": token} })
         .then((res) => console.log(res))
     }
     
@@ -172,8 +176,8 @@ function showExpenseOnScreen(expenseDetails) {
     editbtn.innerHTML = 'Edit'
     editbtn.onclick = () => {
       items.removeChild(tbody)
-      editId(expenseDetails.id)
-      deleteId(expenseDetails.id)
+      editId(expenseDetails._id)
+      deleteId(expenseDetails._id)
       document.getElementById('amount').value = expenseDetails.amount
       document.getElementById('description').value = expenseDetails.description
       document.getElementById('category').value = expenseDetails.category
@@ -220,7 +224,7 @@ razorPay.onclick = async function (e) {
     var options = 
     {
         "key": response.data.key_id,
-        "order_id": response.data.order.id,
+        "order_id": response.data.order.orderid,
         "handler": async function (response) {
             const res = await axios.post('http://localhost:3000/purchase/update-transaction-status', {
                 order_id: options.order_id,
@@ -228,7 +232,7 @@ razorPay.onclick = async function (e) {
             }, { headers: {"Authorization": token} })
 
             alert(`You are a Premium User Now`)
-            showPremiumText(razorPay)//, tokens);
+            showPremiumText(razorPay)
             localStorage.setItem('token', res.data.token)
             showLeaderBoardOnScreen()
         },

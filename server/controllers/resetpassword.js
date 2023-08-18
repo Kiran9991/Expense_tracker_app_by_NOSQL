@@ -52,9 +52,9 @@ const forgotpassword = async (req, res) => {
 const resetpassword = async (req, res) => {
     try {
         const id = req.params.id;
-        const forgotpasswordrequest = await ForgotPassword.findOne({ id });
+        const forgotpasswordrequest = await ForgotPassword.findOne({ id, isActive: true });
         
-        if (forgotpasswordrequest) {
+        if (forgotpasswordrequest && forgotpasswordrequest.userId) {
             await forgotpasswordrequest.updateOne({ isActive: false });
             
             return res.status(200).send(`<html>
@@ -64,6 +64,8 @@ const resetpassword = async (req, res) => {
                     <button>reset password</button>
                 </form>
             </html>`);
+        }else {
+            return res.status(404).json({ error: 'Reset request not found or inactive', success: false });
         }
     } catch (error) {
         console.error(error);
@@ -75,10 +77,10 @@ const updatepassword = async (req, res) => {
     try {
         const { newpassword } = req.query;
         const { resetpasswordid } = req.params;
+
+        const resetpasswordrequest = await ForgotPassword.findOne({ id: resetpasswordid, isActive: true });
         
-        const resetpasswordrequest = await ForgotPassword.findOne({ id: resetpasswordid });
-        
-        if (resetpasswordrequest) {
+        if (resetpasswordrequest && resetpasswordrequest.userId) {
             const user = await User.findById(resetpasswordrequest.userId);
             
             if (user) {
