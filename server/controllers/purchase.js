@@ -1,6 +1,6 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/orders');
-const userController = require('./userController');
+const userController = require('./user');
 const sequelize = require('../util/database');
 require('dotenv').config()
 

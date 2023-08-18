@@ -222,7 +222,7 @@ razorPay.onclick = async function (e) {
         "key": response.data.key_id,
         "order_id": response.data.order.id,
         "handler": async function (response) {
-            const res = await axios.post('http://localhost:3000/purchase/updatetransactionstatus', {
+            const res = await axios.post('http://localhost:3000/purchase/update-transaction-status', {
                 order_id: options.order_id,
                 payment_id: response.razorpay_payment_id,
             }, { headers: {"Authorization": token} })
@@ -269,7 +269,7 @@ async function showDownloadedFiles() {
     const downloadedFiles = document.getElementById('downloadedFiles');
     
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:3000/user/downloadedFiles', { headers: {"Authorization" : token} })
+    const response = await axios.get('http://localhost:3000/user/downloaded-Files', { headers: {"Authorization" : token} })
     const data = response.data;
     console.log('all downloads',data);
     if(data.length >0){ 

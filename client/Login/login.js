@@ -15,13 +15,14 @@ async function loginUser(e) {
         password
     }
 
-    const response = await axios.post(`http://localhost:3000/user/login-user`,loginDetails)
+    const response = await axios.post(`http://localhost:3000/user/login`,loginDetails)
         alert(response.data.message)
         console.log(response.data);
         localStorage.setItem('token', response.data.token)
         window.location.href = `../Expense Table/ExpenseTracker.html`;
     }catch(err) {
-        document.body.innerHTML += `<div style = "color:red;">${err.message} </div>`
+        console.log(err)
+        document.body.innerHTML += `<div style = "color:red;">${err.response.data.message} </div>`
     }
 }
 
